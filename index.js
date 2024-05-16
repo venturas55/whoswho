@@ -105,10 +105,8 @@ wsServer.on("request", request => {
     connection.on("open", () => console.log("opened!"));
     connection.on("close", () => {
         console.log("closed!");
-
     });
     connection.on("message", message => {
-
         const result = JSON.parse(message.utf8Data)
         //I have received a message from the client
         //a user want to create a new game
@@ -135,7 +133,6 @@ wsServer.on("request", request => {
             con.send(JSON.stringify(payLoad));
             //console.log(payLoad);
         }
-
         //a client want to join
         if (result.method === "join") {
 
@@ -181,7 +178,7 @@ wsServer.on("request", request => {
 
         }
         if (result.method === "question2serverTorF") {
-            console.log(result);
+            //console.log(result);
             const payLoad = {
                 "method": "response2clientTorF",
                 "gameId": result.gameId,
@@ -200,11 +197,39 @@ wsServer.on("request", request => {
 
 
         }
-
-
-        console.log(">");
+        if (result.method === "guess2server") {
+            //console.log(result);
+            var payLoad = {
+                "method": "guess2client",
+                "gameId": result.gameId,
+                "guess": result.guess
+            }
+            //obtener la id del rival. 
+            var rivalId = "";
+            games[result.gameId].clients[0].clientId == result.clientId ? rivalId = games[result.gameId].clients[1].clientId : rivalId = games[result.gameId].clients[0].clientId;
+            //fin e obtener el rival
+            console.log(games[result.gameId].clients);
+            console.log(result.gameId + " rival " + rivalId);
+            console.log("----------------------------------------------------------------");
+            console.log(games[result.gameId].clients.filter(el => el.clientId == rivalId)[0]);
+            //console.log(games[result.gameId]);
+            if (result.guess == games[result.gameId].clients.filter(el => el.clientId == rivalId)[0].character.id) {
+                //loop through all the rest of clients who havent send the message and tell them that message 
+                for (var i = 0; i < games[result.gameId].clients.length; i++) {
+                    payLoad.guessResult=true;
+                    clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(payLoad));
+                    //clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(result.clientId + ' no lo ha adivinado ' + result.guess + " " + characters[result.guess].name));
+                }
+            } else {
+                    //loop through all the rest of clients who havent send the message and tell them that message 
+                    for (var i = 0; i < games[result.gameId].clients.length; i++) {
+                        payLoad.guessResult=false;
+                        clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(payLoad));
+                    }
+                
+            }
+        }
         console.log(games[gameId]);
-
     })
 
     //generate a new clientId

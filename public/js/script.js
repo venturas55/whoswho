@@ -1,6 +1,6 @@
 //HTML elements
 const PORT = 9090;
-toggleDisableMando();
+//toggleDisableMando();
 let clientId = null;
 let gameId = null;
 let playerColor = null;
@@ -244,6 +244,17 @@ btnSendQ.addEventListener("click", e => {
     ws.send(JSON.stringify(payLoad));
 });
 
+btnGuessCharacter.addEventListener("click", e => {
+    //console.log(document.getElementById("selectCharacter").value.substring(2));
+    const payLoad = {
+        "method": "guess2server",
+        clientId,
+        gameId,
+        "guess": document.getElementById("selectCharacter").value.substring(2)
+    }
+    ws.send(JSON.stringify(payLoad));
+});
+
 ws.onmessage = message => {
     //message.data
     const response = JSON.parse(message.data);
@@ -258,7 +269,7 @@ ws.onmessage = message => {
         gameId = response.game.id;
         console.log("game successfully created with id " + response.game.id);
         divPlayers.innerHTML = "Esperando un rival... pasale el codigo: " + response.game.id;
-            }
+    }
     if (response.method === "question2client") {
         toggleDisableMando("question2client");
         Confirm("Pregunta", response.question, "Si", "No",);
@@ -270,6 +281,14 @@ ws.onmessage = message => {
             alert("El adversario contestó SI a tu pregunta: " + response.pregunta);
         else
             alert("El adversario contestó NO a tu pregunta: " + response.pregunta);
+    }
+    if (response.method === "guess2client") {
+        toggleDisableMando("guess2client");
+        console.log(response);
+        if (response.guessResult)
+            alert("El adversario acertó " + characters[response.guess].name);
+        else
+            alert("El adversario NO acertó " + characters[response.guess].name);
     }
 
     //join
@@ -293,17 +312,17 @@ ws.onmessage = message => {
                 divChar.appendChild(imgElement);
                 divCharacter.appendChild(divChar);
             }
-                  });
+        });
 
         while (divBoard.firstChild)
             divBoard.removeChild(divBoard.firstChild)
         startBoard();
-        
-        if(clientId != game.created_by) {
+
+        if (clientId != game.created_by) {
             toggleDisableMando("join");
             console.log("Se deshabilita por no ser creador");
         }
         //solo desactivar uno aleatorio
-        
+
     }
 }
