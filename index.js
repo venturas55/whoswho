@@ -12,9 +12,9 @@ httpServer.listen(9090, () => console.log("Listening.. on http://localhost:9090"
 // función middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 //hashmap clients
-const clients = {};
-const games = {};
-
+var clients = {};
+var games = {};
+var gameId;
 
 //APP LISTEN 
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
@@ -108,7 +108,7 @@ wsServer.on("request", request => {
 
     });
     connection.on("message", message => {
-        var gameId;
+
         const result = JSON.parse(message.utf8Data)
         //I have received a message from the client
         //a user want to create a new game
@@ -119,9 +119,10 @@ wsServer.on("request", request => {
                 "id": gameId,
                 "clients": [],
                 "questions": [],
+                "created_by": result.clientId
             }
             games[gameId].clients.push({
-                "clientId": clientId,
+                clientId,
                 "character": characters[Math.floor(Math.random() * characters.length)]
             })
 
@@ -140,17 +141,18 @@ wsServer.on("request", request => {
 
             const clientId = result.clientId;
             const gameId = result.gameId;
-            const game = games[gameId];
-            if (game.clients.length >= 2) {
-                //sorry max players reach
-                return;
-            }
-            game.clients.push({
-                "clientId": clientId,
+            games[gameId].clients.push({
+                clientId,
                 "character": characters[Math.floor(Math.random() * characters.length)]
             })
+            const game = games[gameId];
+            if (games[gameId].clients.length > 2) {
+                console.log("sorry max players reach");
+                return;
+            }
+
             //start the game
-            //if (game.clients.length === 2) updateGameState();
+            if (game.clients.length === 2) console.log("arranca");
 
             const payLoad = {
                 "method": "join",
@@ -165,7 +167,7 @@ wsServer.on("request", request => {
         if (result.method === "question2server") {
             console.log(result);
             const payLoad = {
-                "method": "question2Client",
+                "method": "question2client",
                 "gameId": result.gameId,
                 "question": result.question
             }
@@ -181,11 +183,13 @@ wsServer.on("request", request => {
         if (result.method === "question2serverTorF") {
             console.log(result);
             const payLoad = {
-                "method": "response2ClientTorF",
+                "method": "response2clientTorF",
                 "gameId": result.gameId,
-                "respuestaTorF": result.respuestaTorF
+                "pregunta": result.pregunta,
+                "respuesta": result.respuesta
             }
-
+            //almmaceno la pregunta
+            games[result.gameId].questions.push({ "clientId": result.clientId, "pregunta": result.pregunta, "respuesta": result.respuesta })
             //loop through all the rest of clients who havent send the message and tell them that message 
             for (var i = 0; i < games[result.gameId].clients.length; i++) {
                 if (games[result.gameId].clients[i].clientId != clientId) {
@@ -198,7 +202,7 @@ wsServer.on("request", request => {
         }
 
 
-
+        console.log(">");
         console.log(games[gameId]);
 
     })

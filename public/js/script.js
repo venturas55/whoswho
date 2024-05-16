@@ -1,5 +1,5 @@
 //HTML elements
-const PORT=9090;
+const PORT = 9090;
 toggleDisableMando();
 let clientId = null;
 let gameId = null;
@@ -89,7 +89,8 @@ for (var i = 0; i < characters.length; i++) {
     selectList.appendChild(option);
 }
 
-let ws = new WebSocket("ws://localhost:"+PORT)
+let ws = new WebSocket("ws://localhost:" + PORT);
+//let ws = new WebSocket("ws://adriandeharo.es:"+PORT);
 const btnCreate = document.getElementById("btnCreate");
 const btnJoin = document.getElementById("btnJoin");
 const btnGuessCharacter = document.getElementById("btnGuessCharacter");
@@ -118,7 +119,7 @@ function startBoard() {
 }
 
 function toggleDisableMando(texto) {
-    console.log("toggleDisableMando: "+texto);
+    console.log("toggleDisableMando: " + texto);
     $("#mando").attr("disabled", "disabled").off('click');
     var x1 = $("#mando").hasClass("disabledDiv");
     (x1 == true) ? $("#mando").removeClass("disabledDiv") : $("#mando").addClass("disabledDiv");
@@ -180,7 +181,8 @@ function Confirm(title, msg, $true, $false) {
             "method": "question2serverTorF",
             gameId,
             clientId,
-            "respuestaTorF": true
+            "pregunta": msg,
+            "respuesta": true
         }
         ws.send(JSON.stringify(payLoad));
 
@@ -197,7 +199,8 @@ function Confirm(title, msg, $true, $false) {
             "method": "question2serverTorF",
             gameId,
             clientId,
-            "respuestaTorF": false
+            "pregunta": msg,
+            "respuesta": false
         }
         ws.send(JSON.stringify(payLoad));
 
@@ -255,41 +258,19 @@ ws.onmessage = message => {
         gameId = response.game.id;
         console.log("game successfully created with id " + response.game.id);
         divPlayers.innerHTML = "Esperando un rival... pasale el codigo: " + response.game.id;
+            }
+    if (response.method === "question2client") {
+        toggleDisableMando("question2client");
+        Confirm("Pregunta", response.question, "Si", "No",);
     }
-    if (response.method === "question2Client") {
-        toggleDisableMando("question2Client");
-        Confirm(
-            "Pregunta",
-            response.question,
-            "Si",
-            "No",
-        );
-        
-
-    }
-
-    if (response.method === "response2ClientTorF") {
-
-        if (response.respuestaTorF)
-            alert("SI");
-        else
-            alert("NO");
-
+    if (response.method === "response2clientTorF") {
         //TODO: TOGGLE TURNO:  preguntas y guesses
-        toggleDisableMando("response2ClientTorF");
+        toggleDisableMando("response2clientTorF");
+        if (response.respuesta)
+            alert("El adversario contestó SI a tu pregunta: " + response.pregunta);
+        else
+            alert("El adversario contestó NO a tu pregunta: " + response.pregunta);
     }
-
-    //update
-    /*  if (response.method === "update") {
-         //{1: "red", 1}
-         if (!response.game.state) return;
-         for (const b of Object.keys(response.game.state)) {
-             const color = response.game.state[b];
-             const ballObject = document.getElementById("ball" + b);
-             ballObject.style.backgroundColor = color
-         }
- 
-     } */
 
     //join
     if (response.method === "join") {
@@ -312,11 +293,17 @@ ws.onmessage = message => {
                 divChar.appendChild(imgElement);
                 divCharacter.appendChild(divChar);
             }
-        });
+                  });
 
         while (divBoard.firstChild)
             divBoard.removeChild(divBoard.firstChild)
         startBoard();
-        toggleDisableMando();
+        
+        if(clientId != game.created_by) {
+            toggleDisableMando("join");
+            console.log("Se deshabilita por no ser creador");
+        }
+        //solo desactivar uno aleatorio
+        
     }
 }
