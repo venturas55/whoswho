@@ -104,13 +104,16 @@ wsServer.on("request", request => {
     const connection = request.accept(null, request.origin);
     connection.on("open", () => console.log("opened!"));
     connection.on("close", () => {
-        console.log("<" + clientId);
-        console.log("closed!");
-        console.log(games);
-        for (let i = 0; i < games.length; i++) {
-            for (let j = 0; j < games[i].clients.length; j++) {
-                if (games[i].clients[j].clientId == clientId) {
-                    console.log("existe uno " + clientId);
+        //console.log("<" + clientId);
+        //console.log("closed!");
+        //console.log(games);
+        for (let elemento of Object.keys(games)){
+            console.log(games[elemento]);
+
+            for (let j = 0; j < games[elemento].clients.length; j++) {
+                if (games[elemento].clients[j].clientId == clientId) {
+                    console.log("existe uno " + games[elemento].clients[j]);
+                     games[elemento].clients.splice(j, 1); 
                 } else {
                     console.log("NO existe uno " + clientId);
                 }
@@ -275,12 +278,12 @@ function updateGameState() {
     //games[gameId].timeoutID = setTimeout(updateGameState, 500);
 }
 
-function S4() {
+function S5() {
     //e ha tenido que añadir la condicion de que empiece por una letra para guardar objetos que llevan el id.
     let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     return characters.charAt(Math.floor(Math.random() * characters.length)) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }
 // then to call it, plus stitch in '4' in the third group
-const guid = () => (S4()).toUpperCase();
+const guid = () => (S5()).toUpperCase();
 
 
