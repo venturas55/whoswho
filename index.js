@@ -12,9 +12,9 @@ httpServer.listen(9090, () => console.log("Listening.. on http://localhost:9090"
 // función middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 //hashmap clients
-var clients = {};
-var games = {};
-var gameId;
+let clients = {};
+let games = {};
+let gameId;
 
 //APP LISTEN 
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
@@ -104,7 +104,18 @@ wsServer.on("request", request => {
     const connection = request.accept(null, request.origin);
     connection.on("open", () => console.log("opened!"));
     connection.on("close", () => {
+        console.log("<" + clientId);
         console.log("closed!");
+        console.log(games);
+        for (let i = 0; i < games.length; i++) {
+            for (let j = 0; j < games[i].clients.length; j++) {
+                if (games[i].clients[j].clientId == clientId) {
+                    console.log("existe uno " + clientId);
+                } else {
+                    console.log("NO existe uno " + clientId);
+                }
+            }
+        }
     });
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
@@ -131,7 +142,7 @@ wsServer.on("request", request => {
 
             const con = clients[clientId].connection;
             con.send(JSON.stringify(payLoad));
-            //console.log(payLoad);
+            console.log(games);
         }
         //a client want to join
         if (result.method === "join") {
@@ -162,7 +173,7 @@ wsServer.on("request", request => {
         }
         //a user plays
         if (result.method === "question2server") {
-            console.log(result);
+            //console.log(result);
             const payLoad = {
                 "method": "question2client",
                 "gameId": result.gameId,
@@ -170,7 +181,7 @@ wsServer.on("request", request => {
             }
 
             //loop through all the rest of clients who havent send the message and tell them that message 
-            for (var i = 0; i < games[result.gameId].clients.length; i++) {
+            for (let i = 0; i < games[result.gameId].clients.length; i++) {
                 if (games[result.gameId].clients[i].clientId != clientId) {
                     clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(payLoad));
                 }
@@ -188,7 +199,7 @@ wsServer.on("request", request => {
             //almmaceno la pregunta
             games[result.gameId].questions.push({ "clientId": result.clientId, "pregunta": result.pregunta, "respuesta": result.respuesta })
             //loop through all the rest of clients who havent send the message and tell them that message 
-            for (var i = 0; i < games[result.gameId].clients.length; i++) {
+            for (let i = 0; i < games[result.gameId].clients.length; i++) {
                 if (games[result.gameId].clients[i].clientId != clientId) {
                     clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(payLoad));
                 }
@@ -199,37 +210,37 @@ wsServer.on("request", request => {
         }
         if (result.method === "guess2server") {
             //console.log(result);
-            var payLoad = {
+            let payLoad = {
                 "method": "guess2client",
                 "gameId": result.gameId,
                 "guess": result.guess
             }
             //obtener la id del rival. 
-            var rivalId = "";
+            let rivalId = "";
             games[result.gameId].clients[0].clientId == result.clientId ? rivalId = games[result.gameId].clients[1].clientId : rivalId = games[result.gameId].clients[0].clientId;
             //fin e obtener el rival
-            console.log(games[result.gameId].clients);
-            console.log(result.gameId + " rival " + rivalId);
-            console.log("----------------------------------------------------------------");
-            console.log(games[result.gameId].clients.filter(el => el.clientId == rivalId)[0]);
+            // console.log(games[result.gameId].clients);
+            // console.log(result.gameId + " rival " + rivalId);
+            //console.log("----------------------------------------------------------------");
+            // console.log(games[result.gameId].clients.filter(el => el.clientId == rivalId)[0]);
             //console.log(games[result.gameId]);
             if (result.guess == games[result.gameId].clients.filter(el => el.clientId == rivalId)[0].character.id) {
                 //loop through all the rest of clients who havent send the message and tell them that message 
-                for (var i = 0; i < games[result.gameId].clients.length; i++) {
-                    payLoad.guessResult=true;
+                for (let i = 0; i < games[result.gameId].clients.length; i++) {
+                    payLoad.guessResult = true;
                     clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(payLoad));
                     //clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(result.clientId + ' no lo ha adivinado ' + result.guess + " " + characters[result.guess].name));
                 }
             } else {
-                    //loop through all the rest of clients who havent send the message and tell them that message 
-                    for (var i = 0; i < games[result.gameId].clients.length; i++) {
-                        payLoad.guessResult=false;
-                        clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(payLoad));
-                    }
-                
+                //loop through all the rest of clients who havent send the message and tell them that message 
+                for (let i = 0; i < games[result.gameId].clients.length; i++) {
+                    payLoad.guessResult = false;
+                    clients[games[result.gameId].clients[i].clientId].connection.send(JSON.stringify(payLoad));
+                }
+
             }
         }
-        console.log(games[gameId]);
+        // console.log(games[gameId]);
     })
 
     //generate a new clientId
@@ -265,10 +276,11 @@ function updateGameState() {
 }
 
 function S4() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    //e ha tenido que añadir la condicion de que empiece por una letra para guardar objetos que llevan el id.
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return characters.charAt(Math.floor(Math.random() * characters.length)) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }
-
 // then to call it, plus stitch in '4' in the third group
-const guid = () => (S4() + S4()).toLowerCase();
+const guid = () => (S4()).toUpperCase();
 
 
