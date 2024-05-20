@@ -294,7 +294,7 @@ btnSendQ.addEventListener("click", e => {
     ws.send(JSON.stringify(payLoad));
 });
 
-function sendGuess(gameId, clientId, guess){
+function sendGuess(gameId, clientId, guess) {
     const payLoad = {
         "method": "guess2server",
         clientId,
@@ -302,14 +302,14 @@ function sendGuess(gameId, clientId, guess){
         //"guess": document.getElementById("selectCharacter").value.substring(2)
         guess
     }
-    console.log(payLoad);
+    //console.log(payLoad);
     ws.send(JSON.stringify(payLoad));
 
 }
 
 btnGuessCharacter.addEventListener("click", e => {
     //console.log(document.getElementById("selectCharacter").value.substring(2));
-    sendGuess(gameId,clientId,document.getElementById("selectCharacter").value.substring(2));
+    sendGuess(gameId, clientId, document.getElementById("selectCharacter").value.substring(2));
 
 });
 
@@ -321,7 +321,7 @@ function displayGames(games) {
             d.className = "is-flex is-flex-direction-row is-justify-content-center is-align-content-baseline is-align-items-baseline";
             const l = document.createElement("label");
             l.textContent = item;
-            console.log(item);
+            //console.log(item);
             d.appendChild(l);
             const button = document.createElement("button");
             button.className = "button m-4";
@@ -380,11 +380,15 @@ ws.onmessage = message => {
     }
     if (response.method === "guess2client") {
         toggleDisableMando("guess2client");
-        console.log(response);
-        if (response.guessResult)
-            alert("El adversario acertó " + characters[response.guess].name);
-        else
-            alert("El adversario NO acertó " + characters[response.guess].name);
+        //console.log(response);
+        if (response.guessResult) {
+            Notificacion("TENEMOS GANADOR", "Acertaron el personaje, que era " + characters[response.guess].name);
+            //alert("El adversario acertó " + characters[response.guess].name);
+        }
+        else {
+            Notificacion("SEGUIMOS LA PARTIDA", "NO acertaron el personaje, se supuso que era "  + characters[response.guess].name);
+            //alert("El adversario NO acertó " + characters[response.guess].name);
+        }
     }
     //join
     if (response.method === "join") {
@@ -416,7 +420,7 @@ ws.onmessage = message => {
 
         if (clientId != game.created_by) {
             toggleDisableMando("join");
-            console.log("Se deshabilita por no ser creador");
+            console.log("Se deshabilita por no ser creador de partida");
         }
         //solo desactivar uno aleatorio
 
