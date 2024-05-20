@@ -99,7 +99,9 @@ const characters = [
     }];
 
 //CON .baseURI de cualquier elemento de la web recoges el nombre del host y puerto que envia el html!!!!!!!!!!!!!!!!!!
-var url = (document.getElementById("hostdata").baseURI.split("//")[1].split(":")[0]);
+console.log(document.getElementById("hostdata").baseURI);
+var url = (document.getElementById("hostdata").baseURI.split("//")[1].split(":")[0].split("/")[0]);
+console.log(url);
 var puerto = document.getElementById("hostdata").attributes.puerto.nodeValue;
 const URLWS = "ws://" + url + ":" + puerto;
 console.log(URLWS);
