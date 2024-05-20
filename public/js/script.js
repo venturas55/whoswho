@@ -1,5 +1,4 @@
 //HTML elements
-const PORT = 9090;
 //toggleDisableMando();
 let clientId = null;
 let gameId = null;
@@ -101,6 +100,12 @@ const characters = [
         id: 44, name: "Jackie Chan", src: "chan.png"
 
     }];
+    
+//CON .baseURI de cualquier elemento de la web recoges el nombre del host y puerto que envia el html!!!!!!!!!!!!!!!!!!
+var url=(document.getElementById("hostdata").baseURI.split("//")[1].split(":")[0]);
+var puerto=document.getElementById("hostdata").attributes.puerto.nodeValue;
+const URLWS="ws://"+url+":" + puerto;
+
 
 var selectList = document.getElementById("selectCharacter");
 for (var i = 0; i < characters.length; i++) {
@@ -109,8 +114,7 @@ for (var i = 0; i < characters.length; i++) {
     option.text = characters[i].name;
     selectList.appendChild(option);
 }
-
-let ws = new WebSocket("ws://localhost:" + PORT);
+let ws = new WebSocket(URLWS);
 //let ws = new WebSocket("ws://adriandeharo.es:"+PORT);
 const btnCreate = document.getElementById("btnCreate");
 const btnJoin = document.getElementById("btnJoin");

@@ -1,14 +1,18 @@
+const WS_PORT = 9090;
 const http = require("http");
 const express = require("express");
 const app = express();
 const path = require("path");
+const fs = require("fs");
+require('dotenv').config()
+//console.log(process.env.HOSTNAME);
 app.listen(6001, () => console.log("Listening on http port http://localhost:6001"))
 
 
 //creo server websocket
 const websocketServer = require("websocket").server;
 const httpServer = http.createServer();
-httpServer.listen(9090, () => console.log("and Listening sockets on 9090.. "));
+httpServer.listen(WS_PORT, () => console.log("and Listening sockets on 9090.. "));
 // función middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 //hashmap clients
@@ -17,7 +21,20 @@ let games = {};
 let gameId;
 
 //APP LISTEN 
-app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
+app.get("/", (req, res) => {
+    const filePath = path.join(__dirname, 'index.html');
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).send('Error reading the file.');
+    }
+
+    // Asegúrate de que la variable data está definida y contiene el contenido del archivo HTML
+    const modifiedData = data.replace('<!--HOST_PLACEHOLDER-->', WS_PORT);
+
+    res.send(modifiedData);
+  });
+});
 
 const characters = [
     {
@@ -164,13 +181,13 @@ wsServer.on("request", request => {
                 "game": games[gameId],
                 "games": games
             }
-            
+
             //TODO: si un usuario crea de nuevo partida, eliminar la anterior.
 
 
             //loop through all clients and tell them that data
             for (const property in clients) {
-                    clients[property].connection.send(JSON.stringify(payLoad));
+                clients[property].connection.send(JSON.stringify(payLoad));
             }
         }
         //a client want to join
