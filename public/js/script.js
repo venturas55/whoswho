@@ -6,7 +6,7 @@ let gameId = null;
 let playerColor = null;
 const characters = [
     {
-        id: 0, name: "Carolina"
+        id: 0, name: "Carolina", src: "1.png"
     }, {
         id: 1, name: "Cristina"
     }, {
@@ -79,6 +79,27 @@ const characters = [
         id: 34, name: "Mario"
     }, {
         id: 35, name: "Blanca"
+    }, {
+        id: 36, name: "Antonio Banderas", src: "banderas.png"
+    }, {
+        id: 37, name: "Marc Anthony", src: "anthony.png"
+    }, {
+        id: 38, name: "David Bisbal", src: "bisbal.png"
+    }, {
+        id: 39, name: "Jennifer Lopez", src: "jlo.png"
+    }, {
+        id: 39, name: "Jhonny Deep", src: "deep.jpg"
+    }, {
+        id: 40, name: "Pedro Sanchez", src: "pedrosanchez.png"
+    }, {
+        id: 41, name: "Rosalia", src: "rosalia.png"
+    }, {
+        id: 42, name: "Sharon Stone", src: "stone.png"
+    }, {
+        id: 43, name: "Will Smith", src: "will.png"
+    }, {
+        id: 44, name: "Jackie Chan", src: "chan.png"
+
     }];
 
 var selectList = document.getElementById("selectCharacter");
@@ -255,6 +276,35 @@ btnGuessCharacter.addEventListener("click", e => {
     ws.send(JSON.stringify(payLoad));
 });
 
+function displayGames(games) {
+    //console.log(games);
+    //const listado = document.getElementById("listadoPartidas");
+    /*     while (listadoPartidas.firstChild)
+            listadoPartidas.removeChild(listadoPartidas.firstChild) */
+    divPlayers.innerHTML = "<h4> Partidas disponibles</h4>";
+    for (const item in games) {
+        const d = document.createElement("div");
+        const l = document.createElement("label");
+        l.textContent = item;
+        console.log(item);
+        d.appendChild(l);
+        const button = document.createElement("button");
+        button.className = "button";
+        button.onclick = function(){
+            const payLoad = {
+                "method": "join",
+                clientId,
+                "gameId":item
+            }
+            ws.send(JSON.stringify(payLoad));
+          };
+          button.innerHTML = "join";
+          d.appendChild(button);
+          divPlayers.appendChild(d);
+
+    }
+}
+
 ws.onmessage = message => {
     //message.data
     const response = JSON.parse(message.data);
@@ -268,7 +318,11 @@ ws.onmessage = message => {
     if (response.method === "create") {
         gameId = response.game.id;
         console.log("game successfully created with id " + response.game.id);
-        divPlayers.innerHTML = "Esperando un rival... pasale el codigo: " + response.game.id;
+        console.log(response.game.created_by + " x " + clientId);
+        if (response.game.created_by == clientId) {
+            divPlayers.innerHTML = "Esperando un rival... pasale el codigo: " + response.game.id;
+        } else
+            displayGames(response.games);
     }
     if (response.method === "question2client") {
         toggleDisableMando("question2client");
@@ -332,43 +386,43 @@ ws.onmessage = message => {
 document.addEventListener('DOMContentLoaded', () => {
     // Functions to open and close a modal
     function openModal($el) {
-      $el.classList.add('is-active');
+        $el.classList.add('is-active');
     }
-  
+
     function closeModal($el) {
-      $el.classList.remove('is-active');
+        $el.classList.remove('is-active');
     }
-  
+
     function closeAllModals() {
-      (document.querySelectorAll('.modal') || []).forEach(($modal) => {
-        closeModal($modal);
-      });
+        (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+            closeModal($modal);
+        });
     }
-  
+
     // Add a click event on buttons to open a specific modal
     (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
-      const modal = $trigger.dataset.target;
-      const $target = document.getElementById(modal);
-  
-      $trigger.addEventListener('click', () => {
-        openModal($target);
-      });
+        const modal = $trigger.dataset.target;
+        const $target = document.getElementById(modal);
+
+        $trigger.addEventListener('click', () => {
+            openModal($target);
+        });
     });
-  
+
     // Add a click event on various child elements to close the parent modal
     (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
-      const $target = $close.closest('.modal');
-  
-      $close.addEventListener('click', () => {
-        closeModal($target);
-      });
+        const $target = $close.closest('.modal');
+
+        $close.addEventListener('click', () => {
+            closeModal($target);
+        });
     });
-  
+
     // Add a keyboard event to close all modals
     document.addEventListener('keydown', (event) => {
-      if(event.key === "Escape") {
-        closeAllModals();
-      }
+        if (event.key === "Escape") {
+            closeAllModals();
+        }
     });
-  });
-  /* end of bulma working */
+});
+/* end of bulma working */

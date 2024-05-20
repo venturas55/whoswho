@@ -8,7 +8,7 @@ app.listen(6001, () => console.log("Listening on http port http://localhost:6001
 //creo server websocket
 const websocketServer = require("websocket").server;
 const httpServer = http.createServer();
-httpServer.listen(9090, () => console.log("Listening.. on http://localhost:9090"));
+httpServer.listen(9090, () => console.log("and Listening sockets on 9090.. "));
 // función middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 //hashmap clients
@@ -21,7 +21,7 @@ app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 
 const characters = [
     {
-        id: 0, name: "Carolina"
+        id: 0, name: "Carolina", src: "1.png"
     }, {
         id: 1, name: "Cristina"
     }, {
@@ -94,6 +94,27 @@ const characters = [
         id: 34, name: "Mario"
     }, {
         id: 35, name: "Blanca"
+    }, {
+        id: 36, name: "Antonio Banderas", src: "banderas.png"
+    }, {
+        id: 37, name: "Marc Anthony", src: "anthony.png"
+    }, {
+        id: 38, name: "David Bisbal", src: "bisbal.png"
+    }, {
+        id: 39, name: "Jennifer Lopez", src: "jlo.png"
+    }, {
+        id: 39, name: "Jhonny Deep", src: "deep.jpg"
+    }, {
+        id: 40, name: "Pedro Sanchez", src: "pedrosanchez.png"
+    }, {
+        id: 41, name: "Rosalia", src: "rosalia.png"
+    }, {
+        id: 42, name: "Sharon Stone", src: "stone.png"
+    }, {
+        id: 43, name: "Will Smith", src: "will.png"
+    }, {
+        id: 44, name: "Jackie Chan", src: "chan.png"
+
     }];
 
 const wsServer = new websocketServer({
@@ -107,13 +128,13 @@ wsServer.on("request", request => {
         //console.log("<" + clientId);
         //console.log("closed!");
         //console.log(games);
-        for (let elemento of Object.keys(games)){
+        for (let elemento of Object.keys(games)) {
             console.log(games[elemento]);
 
             for (let j = 0; j < games[elemento].clients.length; j++) {
                 if (games[elemento].clients[j].clientId == clientId) {
                     console.log("existe uno " + games[elemento].clients[j]);
-                     games[elemento].clients.splice(j, 1); 
+                    games[elemento].clients.splice(j, 1);
                 } else {
                     console.log("NO existe uno " + clientId);
                 }
@@ -140,12 +161,17 @@ wsServer.on("request", request => {
 
             const payLoad = {
                 "method": "create",
-                "game": games[gameId]
+                "game": games[gameId],
+                "games": games
             }
+            
+            //TODO: si un usuario crea de nuevo partida, eliminar la anterior.
 
-            const con = clients[clientId].connection;
-            con.send(JSON.stringify(payLoad));
-            console.log(games);
+
+            //loop through all clients and tell them that data
+            for (const property in clients) {
+                    clients[property].connection.send(JSON.stringify(payLoad));
+            }
         }
         //a client want to join
         if (result.method === "join") {
@@ -172,7 +198,7 @@ wsServer.on("request", request => {
             //loop through all clients and tell them that people has joined
             game.clients.forEach(c => {
                 clients[c.clientId].connection.send(JSON.stringify(payLoad))
-            })
+            });
         }
         //a user plays
         if (result.method === "question2server") {
