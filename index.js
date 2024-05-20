@@ -36,79 +36,79 @@ app.get("/", (req, res) => {
 
 const characters = [
     {
-        id: 0, name: "Carolina", src: "1.png"
+        id: 0, name: "Carolina", src: "0.png"
     }, {
-        id: 1, name: "Cristina"
+        id: 1, name: "Cristina", src: "1.png"
     }, {
-        id: 2, name: "Gabriela"
+        id: 2, name: "Gabriela", src: "2.png"
     }, {
-        id: 3, name: "Oscar"
+        id: 3, name: "Oscar", src: "3.png"
     },
     {
-        id: 4, name: "Maria",
+        id: 4, name: "Maria", src: "4.png"
     }, {
-        id: 5, name: "Borja",
+        id: 5, name: "Borja", src: "5.png"
     }, {
-        id: 6, name: "Loreto"
+        id: 6, name: "Loreto", src: "6.png"
     }, {
-        id: 7, name: "Nacho"
+        id: 7, name: "Nacho", src: "7.png"
     }, {
-        id: 8, name: "Beatriz"
+        id: 8, name: "Beatriz", src: "8.png"
     },
     {
-        id: 9, name: "Pedro"
+        id: 9, name: "Pedro", src: "9.png"
     }, {
-        id: 10, name: "Raquel"
+        id: 10, name: "Raquel", src: "10.png"
     }, {
-        id: 11, name: "Sara"
+        id: 11, name: "Sara", src: "11.png"
     }, {
-        id: 12, name: "Inés"
+        id: 12, name: "Inés", src: "12.png"
     }, {
-        id: 13, name: "Daniel"
+        id: 13, name: "Daniel", src: "13.png"
     }, {
-        id: 14, name: "Susana"
+        id: 14, name: "Susana", src: "14.png"
     }, {
-        id: 15, name: "Ramon"
+        id: 15, name: "Ramon", src: "15.png"
     }, {
-        id: 16, name: "Catalina"
+        id: 16, name: "Catalina", src: "16.png"
     }, {
-        id: 17, name: "Camino"
+        id: 17, name: "Camino", src: "17.png"
     }, {
-        id: 18, name: "Carlos"
+        id: 18, name: "Carlos", src: "18.png"
     }, {
-        id: 19, name: "Jesus"
+        id: 19, name: "Jesus", src: "19.png"
     }, {
-        id: 20, name: "Lola"
+        id: 20, name: "Lola", src: "20.png"
     }, {
-        id: 21, name: "Jorge"
+        id: 21, name: "Jorge", src: "21.png"
     }, {
-        id: 22, name: "Carlota"
+        id: 22, name: "Carlota", src: "22.png"
     }, {
-        id: 23, name: "angel"
+        id: 23, name: "angel", src: "23.png"
     }, {
-        id: 24, name: "Teresa"
+        id: 24, name: "Teresa", src: "24.png"
     }, {
-        id: 25, name: "Arturo"
+        id: 25, name: "Arturo", src: "25.png"
     }, {
-        id: 26, name: "Liliana"
+        id: 26, name: "Liliana", src: "26.png"
     }, {
-        id: 27, name: "Fátima"
+        id: 27, name: "Fátima", src: "27.png"
     }, {
-        id: 28, name: "Marina"
+        id: 28, name: "Marina", src: "28.png"
     }, {
-        id: 29, name: "Alejandro"
+        id: 29, name: "Alejandro", src: "29.png"
     }, {
-        id: 30, name: "Paz"
+        id: 30, name: "Paz", src: "30.png"
     }, {
-        id: 31, name: "Alberto"
+        id: 31, name: "Alberto", src: "31.png"
     }, {
-        id: 32, name: "Veronica"
+        id: 32, name: "Veronica", src: "32.png"
     }, {
-        id: 33, name: "Paula"
+        id: 33, name: "Paula", src: "33.png"
     }, {
-        id: 34, name: "Mario"
+        id: 34, name: "Mario", src: "34.png"
     }, {
-        id: 35, name: "Blanca"
+        id: 35, name: "Blanca", src: "35.png"
     }, {
         id: 36, name: "Antonio Banderas", src: "banderas.png"
     }, {
@@ -118,7 +118,7 @@ const characters = [
     }, {
         id: 39, name: "Jennifer Lopez", src: "jlo.png"
     }, {
-        id: 39, name: "Jhonny Deep", src: "deep.jpg"
+        id: 39, name: "Jhonny Deep", src: "depp.jpg"
     }, {
         id: 40, name: "Pedro Sanchez", src: "pedrosanchez.png"
     }, {
