@@ -22,16 +22,16 @@ let gameId;
 app.get("/", (req, res) => {
     const filePath = path.join(__dirname, 'index.html');
 
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      return res.status(500).send('Error reading the file.');
-    }
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading the file.');
+        }
 
-    // Asegúrate de que la variable data está definida y contiene el contenido del archivo HTML
-    const modifiedData = data.replace('<!--HOST_PLACEHOLDER-->', WS_PORT);
+        // Asegúrate de que la variable data está definida y contiene el contenido del archivo HTML
+        const modifiedData = data.replace('<!--HOST_PLACEHOLDER-->', WS_PORT);
 
-    res.send(modifiedData);
-  });
+        res.send(modifiedData);
+    });
 });
 
 const characters = [
@@ -138,18 +138,29 @@ wsServer.on("request", request => {
     const connection = request.accept(null, request.origin);
     connection.on("open", () => console.log("opened!"));
     connection.on("close", () => {
-            for (let elemento of Object.keys(games)) {
+        for (let elemento of Object.keys(games)) {
             console.log(games[elemento]);
 
+
+            //Elimar el cliente de todas las partidas de las que sale.
             for (let j = 0; j < games[elemento].clients.length; j++) {
                 if (games[elemento].clients[j].clientId == clientId) {
                     console.log("existe uno " + games[elemento].clients[j]);
                     games[elemento].clients.splice(j, 1);
                 } else {
-                    console.log("NO existe uno " + clientId);
+                    console.log("El cliente " + clientId + " no formaba parte de ninguna partida");
                 }
             }
+             //TODO: cuando sale un cliente, eliminar todas las partidas en las que es "created_by".
+             if(games[elemento].created_by===clientId){
+                console.log("Borrando partida ");
+                console.log(games[elemento]);
+                delete games[elemento];
+             }
         }
+
+       
+
     });
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
@@ -174,9 +185,6 @@ wsServer.on("request", request => {
                 "game": games[gameId],
                 "games": games
             }
-
-            //TODO: si un usuario crea de nuevo partida, eliminar la anterior.
-
 
             //loop through all clients and tell them that data
             for (const property in clients) {
