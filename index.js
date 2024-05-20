@@ -154,7 +154,7 @@ wsServer.on("request", request => {
              //TODO: cuando sale un cliente, eliminar todas las partidas en las que es "created_by".
              if(games[elemento].created_by===clientId){
                 console.log("Borrando partida ");
-                console.log(games[elemento]);
+                //console.log(games[elemento]);
                 delete games[elemento];
              }
         }
@@ -207,7 +207,7 @@ wsServer.on("request", request => {
             }
 
             //start the game
-            if (game.clients.length === 2) console.log("arranca");
+            if (game.clients.length === 2) console.log("Partida iniciada");
 
             const payLoad = {
                 "method": "join",
@@ -256,7 +256,8 @@ wsServer.on("request", request => {
 
         }
         if (result.method === "guess2server") {
-            //console.log(result);
+            console.log("VA result.gameId");
+            console.log(result.gameId);
             let payLoad = {
                 "method": "guess2client",
                 "gameId": result.gameId,
@@ -264,6 +265,9 @@ wsServer.on("request", request => {
             }
             //obtener la id del rival. 
             let rivalId = "";
+            console.log("VA games");
+            console.log(games);
+            console.log(games[result.gameId]);
             games[result.gameId].clients[0].clientId == result.clientId ? rivalId = games[result.gameId].clients[1].clientId : rivalId = games[result.gameId].clients[0].clientId;
             //fin e obtener el rival
             // console.log(games[result.gameId].clients);

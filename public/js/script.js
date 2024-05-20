@@ -118,7 +118,7 @@ const btnJoin = document.getElementById("btnJoin");
 const btnGuessCharacter = document.getElementById("btnGuessCharacter");
 const btnSendQ = document.getElementById("btnSendQ");
 const txtGameId = document.getElementById("txtGameId");
-const divPlayers = document.getElementById("divPlayers");
+const divInfo = document.getElementById("divInfo");
 const divCharacter = document.getElementById("divCharacter");
 const divBoard = document.getElementById("divBoard");
 const mando = document.getElementById("mando");
@@ -131,7 +131,7 @@ function startBoard() {
         divElement.id = "id" + i;
         const imgElement = document.createElement('img');
         imgElement.src = "./img/" + characters[i].src;
-        imgElement.className="is-rounded";
+        imgElement.className = "is-rounded";
         divElement.appendChild(imgElement);
         divBoard.appendChild(divElement);
     }
@@ -294,44 +294,53 @@ btnSendQ.addEventListener("click", e => {
     ws.send(JSON.stringify(payLoad));
 });
 
-btnGuessCharacter.addEventListener("click", e => {
-    //console.log(document.getElementById("selectCharacter").value.substring(2));
+function sendGuess(gameId, clientId, guess){
     const payLoad = {
         "method": "guess2server",
         clientId,
         gameId,
-        "guess": document.getElementById("selectCharacter").value.substring(2)
+        //"guess": document.getElementById("selectCharacter").value.substring(2)
+        guess
     }
+    console.log(payLoad);
     ws.send(JSON.stringify(payLoad));
+
+}
+
+btnGuessCharacter.addEventListener("click", e => {
+    //console.log(document.getElementById("selectCharacter").value.substring(2));
+    sendGuess(gameId,clientId,document.getElementById("selectCharacter").value.substring(2));
+
 });
 
 function displayGames(games) {
-    //console.log(games);
-    //const listado = document.getElementById("listadoPartidas");
-    /*     while (listadoPartidas.firstChild)
-            listadoPartidas.removeChild(listadoPartidas.firstChild) */
-    divPlayers.innerHTML = "<p>No hay partidas disponibles</p>";
-    for (const item in games) {
-        const d = document.createElement("div");
-        const l = document.createElement("label");
-        l.textContent = item;
-        console.log(item);
-        d.appendChild(l);
-        const button = document.createElement("button");
-        button.className = "button";
-        button.onclick = function () {
-            const payLoad = {
-                "method": "join",
-                clientId,
-                "gameId": item
-            }
-            ws.send(JSON.stringify(payLoad));
-        };
-        button.innerHTML = "join";
-        d.appendChild(button);
-        divPlayers.appendChild(d);
-
+    divInfo.innerHTML = '<h1 class="has-text-centered">Partidas disponibles</h1>';
+    if (games) {
+        for (const item in games) {
+            const d = document.createElement("div");
+            d.className = "is-flex is-flex-direction-row is-justify-content-center is-align-content-baseline is-align-items-baseline";
+            const l = document.createElement("label");
+            l.textContent = item;
+            console.log(item);
+            d.appendChild(l);
+            const button = document.createElement("button");
+            button.className = "button m-4";
+            button.onclick = function () {
+                const payLoad = {
+                    "method": "join",
+                    clientId,
+                    "gameId": item
+                }
+                ws.send(JSON.stringify(payLoad));
+            };
+            button.innerHTML = "<label>Unirse</label> <i class=' mx-2 fas fa-sign-in-alt'></i>";
+            d.appendChild(button);
+            divInfo.appendChild(d);
+        }
+    } else {
+        divInfo.innerHTML = "<p>No hay partidas disponibles</p>";
     }
+
 }
 
 ws.onmessage = message => {
@@ -350,7 +359,7 @@ ws.onmessage = message => {
         console.log("game successfully created with id " + response.game.id);
         console.log(response.game.created_by + " x " + clientId);
         if (response.game.created_by == clientId) {
-            divPlayers.innerHTML = "Esperando un rival... pasale el codigo: " + response.game.id;
+            divInfo.innerHTML = "Esperando un rival... pasale el codigo: " + response.game.id;
         } else {
             displayGames(response.games);
         }
@@ -366,7 +375,7 @@ ws.onmessage = message => {
             //alert("El adversario contestó SI a tu pregunta: " + response.pregunta);
             Notificacion("Respondieron que SI", response.pregunta);
         else
-        Notificacion("Respondieron que NO", response.pregunta);
+            Notificacion("Respondieron que NO", response.pregunta);
         // alert("El adversario contestó NO a tu pregunta: " + response.pregunta);
     }
     if (response.method === "guess2client") {
@@ -380,17 +389,14 @@ ws.onmessage = message => {
     //join
     if (response.method === "join") {
         mando.style.display = "block";
-
         const game = response.game;
-
-        /*  while (divPlayers.firstChild)
-             divPlayers.removeChild(divPlayers.firstChild) */
-        divPlayers.innerHTML = "";
+        gameId = response.game.id;
+        divInfo.innerHTML = "";
 
         game.clients.forEach(c => {
             const d = document.createElement("div");
             d.textContent = c.clientId;
-            divPlayers.appendChild(d);
+            divInfo.appendChild(d);
             //crear character
             if (clientId == c.clientId) {
                 const divChar = document.createElement('div');
