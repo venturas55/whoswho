@@ -102,6 +102,7 @@ const characters = [
 var url = (document.getElementById("hostdata").baseURI.split("//")[1].split(":")[0]);
 var puerto = document.getElementById("hostdata").attributes.puerto.nodeValue;
 const URLWS = "ws://" + url + ":" + puerto;
+console.log(URLWS);
 
 
 var selectList = document.getElementById("selectCharacter");
