@@ -13,47 +13,79 @@
 <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <h1>Who's Who Game</h1>
+            <img src="./img/logo.png" alt="">
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
         </div>
-        <div class="navbar-end">
-            <div class="navbar-item">
-                <button class="button js-modal-trigger" data-target="modal-js-example">
-                    Open JS example modal
-                </button>
-                <input class="button" type="button" value="Click" onclick="toggleDisableMando()" />
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <div class="navbar-item">
+                    <button class="button js-modal-trigger" data-target="modal-js-example">
+                        Instrucciones
+                    </button>
+                </div>
+                <div class="navbar-item">
+                    <button class="button" onclick="toggleDisableMando()">Click</button>
+                </div>
+                <div class="navbar-item">
+                    <button class="button" id='btnCreate'>New Game</button>
+                </div>
+
+                <div class="navbar-item">
+                    <input class="input is-primary" id="" txtGameId type="text" placeholder="Paste code here" />
+                    <button class="button" id='btnJoin'>Join Game</button>
+                </div>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-primary">
+                            <strong>Sign up</strong>
+                        </a>
+                        <a class="button is-light"> Log in </a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="menu">
-        <div class="box submenu">
-            <button class="button" id='btnCreate'>New Game</button>
-            <button class="button" id='btnJoin'>Join Game</button>
-            <input class="box" type='text' id='txtGameId'>
-        </div>
-        <div class="box">
-            <div id='divPlayers'></div>
-            <div id='divCharacter'></div>
-        </div>
-        <div id="mando">
-            <div class="box submenu">
-                <label class="label">Haz una pregunta</label>
-                <input class="box" type="text" id="pregunta">
-                <button class="button" id="btnSendQ">Enviar</button>
-
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column " id='divPlayers'>
             </div>
-            <div class="box submenu is-three-fifths">
-                <label class="label ">Quieres intentar adivinar quien es?</label>
-                <select name="seleccion" id="selectCharacter" class="select">
-                </select>
-                <button id="btnGuessCharacter">Enviar</button>
+            <div class="column is-three-quarters" id="mando">
+                <div class="columns is-centered">
+                    <div class="column">
+                        <div class="box">
+                            <div class="is-flex is-flex-direction-column is-justify-content-center is-align-content-baseline is-align-items-baseline">
+                            <!-- <span class="tag is-link is-large"> Pregunta:</span> -->
+                            <textarea  class="textarea is-small" type="text" id="pregunta" placeholder="Haz tu pregunta aqui"> </textarea>
 
+                            <button class="button" id="btnSendQ">Enviar</button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="box">
+                            <label class="label ">Quieres intentar adivinar quien es?</label>
+                            <select  class="select is-rounded is-large" name="seleccion" id="selectCharacter">
+                            </select>
+                            <button class="button" id="btnGuessCharacter">Enviar</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-   
+            <div class="column " id='divCharacter'></div>
         </div>
     </div>
 
-    <div id='divBoard' class="tablero">
+    <div id='divBoard' class="is-flex is-flex-direction-row is-flex-wrap-wrap is-justify-content-center">
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"

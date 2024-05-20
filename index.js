@@ -43,8 +43,7 @@ const characters = [
         id: 2, name: "Gabriela", src: "2.png"
     }, {
         id: 3, name: "Oscar", src: "3.png"
-    },
-    {
+    }, {
         id: 4, name: "Maria", src: "4.png"
     }, {
         id: 5, name: "Borja", src: "5.png"
@@ -54,8 +53,7 @@ const characters = [
         id: 7, name: "Nacho", src: "7.png"
     }, {
         id: 8, name: "Beatriz", src: "8.png"
-    },
-    {
+    }, {
         id: 9, name: "Pedro", src: "9.png"
     }, {
         id: 10, name: "Raquel", src: "10.png"
@@ -118,17 +116,17 @@ const characters = [
     }, {
         id: 39, name: "Jennifer Lopez", src: "jlo.png"
     }, {
-        id: 39, name: "Jhonny Deep", src: "depp.jpg"
+        id: 40, name: "Jhonny Deep", src: "depp.jpg"
     }, {
-        id: 40, name: "Pedro Sanchez", src: "pedrosanchez.png"
+        id: 41, name: "Pedro Sanchez", src: "pedrosanchez.png"
     }, {
-        id: 41, name: "Rosalia", src: "rosalia.png"
+        id: 42, name: "Rosalia", src: "rosalia.png"
     }, {
-        id: 42, name: "Sharon Stone", src: "stone.png"
+        id: 43, name: "Sharon Stone", src: "stone.png"
     }, {
-        id: 43, name: "Will Smith", src: "will.png"
+        id: 44, name: "Will Smith", src: "will.png"
     }, {
-        id: 44, name: "Jackie Chan", src: "chan.png"
+        id: 45, name: "Jackie Chan", src: "chan.png"
 
     }];
 
@@ -140,10 +138,7 @@ wsServer.on("request", request => {
     const connection = request.accept(null, request.origin);
     connection.on("open", () => console.log("opened!"));
     connection.on("close", () => {
-        //console.log("<" + clientId);
-        //console.log("closed!");
-        //console.log(games);
-        for (let elemento of Object.keys(games)) {
+            for (let elemento of Object.keys(games)) {
             console.log(games[elemento]);
 
             for (let j = 0; j < games[elemento].clients.length; j++) {
@@ -295,7 +290,8 @@ wsServer.on("request", request => {
 
     const payLoad = {
         "method": "connect",
-        "clientId": clientId
+        "clientId": clientId,
+        "games": games
     };
     //send back the client connect
     connection.send(JSON.stringify(payLoad));
