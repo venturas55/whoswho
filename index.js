@@ -4,8 +4,6 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const fs = require("fs");
-require('dotenv').config()
-//console.log(process.env.HOSTNAME);
 app.listen(6001, () => console.log("Listening on http port http://localhost:6001"))
 
 
