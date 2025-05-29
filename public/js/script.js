@@ -98,11 +98,27 @@ const characters = [
 
     }];
 
-// Initialize WebSocket connection with proper port
+// Initialize WebSocket connection
 // Get port from URL parameters or use default
 const params = new URLSearchParams(window.location.search);
 const port = params.get('ws_port') || '9090'; // Default to 9090 if not specified
-const ws = new WebSocket(`ws://${window.location.hostname}:${port}`);
+
+// Determine if we should use secure WebSocket (wss) or not
+const isSecure = window.location.protocol === 'https:';
+const wsProtocol = isSecure ? 'wss' : 'ws';
+
+// Create WebSocket connection
+let ws;
+try {
+    ws = new WebSocket(`${wsProtocol}://${window.location.hostname}:${port}`);
+} catch (error) {
+    console.error('WebSocket connection failed:', error);
+    // Fallback to non-secure connection if secure connection fails
+    if (isSecure) {
+        console.log('Trying fallback to non-secure connection...');
+        ws = new WebSocket(`ws://${window.location.hostname}:${port}`);
+    }
+}
 
 // Add error handling for WebSocket connection
 ws.onerror = (error) => {
