@@ -98,15 +98,13 @@ const characters = [
 
     }];
 
-//CON .baseURI de cualquier elemento de la web recoges el nombre del host y puerto que envia el html!!!!!!!!!!!!!!!!!!
-console.log(document.getElementById("hostdata").baseURI);
-var url = (document.getElementById("hostdata").baseURI.split("//")[1].split(":")[0].split("/")[0]);
-console.log(url);
-var puerto = document.getElementById("hostdata").attributes.puerto.nodeValue;
-const URLWS = "ws://" + url + ":" + puerto;
-console.log(URLWS);
+// Initialize WebSocket connection with proper protocol handling
+const hostData = document.getElementById('hostdata');
+const port = hostData.getAttribute('puerto');
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const ws = new WebSocket(`${protocol}//${window.location.hostname}:${port}`);
 
-
+// Populate character select options
 var selectList = document.getElementById("selectCharacter");
 for (var i = 0; i < characters.length; i++) {
     var option = document.createElement("option");
@@ -114,7 +112,6 @@ for (var i = 0; i < characters.length; i++) {
     option.text = characters[i].name;
     selectList.appendChild(option);
 }
-let ws = new WebSocket(URLWS);
 //let ws = new WebSocket("ws://adriandeharo.es:"+PORT);
 const btnCreate = document.getElementById("btnCreate");
 const btnJoin = document.getElementById("btnJoin");
