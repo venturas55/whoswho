@@ -98,11 +98,26 @@ const characters = [
 
     }];
 
-// Initialize WebSocket connection with proper protocol handling
-const hostData = document.getElementById('hostdata');
-const port = hostData.getAttribute('puerto');
-const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-const ws = new WebSocket(`${protocol}//${window.location.hostname}:${port}`);
+// Initialize WebSocket connection with proper port
+// Get port from URL parameters or use default
+const params = new URLSearchParams(window.location.search);
+const port = params.get('ws_port') || '9090'; // Default to 9090 if not specified
+const ws = new WebSocket(`ws://${window.location.hostname}:${port}`);
+
+// Add error handling for WebSocket connection
+ws.onerror = (error) => {
+    console.error('WebSocket connection error:', error);
+    alert('Error connecting to WebSocket server. Please check if the server is running.');
+};
+
+// Add connection status logging
+ws.onopen = () => {
+    console.log('WebSocket connection established');
+};
+
+ws.onclose = () => {
+    console.log('WebSocket connection closed');
+};
 
 // Populate character select options
 var selectList = document.getElementById("selectCharacter");
